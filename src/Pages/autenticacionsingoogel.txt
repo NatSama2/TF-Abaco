@@ -1,0 +1,44 @@
+  function submitHandler(e) {
+    e.preventDefault();
+    const email = e.target.elements.email.value;
+    const password = e.target.elements.password.value;
+
+    console.log("sumbit", email, password);
+
+
+
+<form onSubmit={submitHandler}>
+          <div className="bg-grisMuyClaro px-[84px] h-[250px] w-[80%] md:w-[50%] rounded-[150px] m-[5px] flex justify-center items-center grid grid-cols-5 grid-rows-3 gap-y-[5px] gap-x-[10px]">
+            <div id="celda1">
+              {/* <p className="mr-[10px] text-verde-oscuro font-bold">Usuario:</p> */}
+            </div>
+            <div className="col-span-2" id="celda2">
+              <label>
+                Usuario
+                <input type="email" id="email" />
+              </label>
+              {/* <input type="text" placeholder="Juaniata Pérez" /> */}
+            </div>
+            <div className="col-span-2 " id="celda3"></div>
+            <div id="celda4" className="text-verde-oscuro font-bold">
+              {/* <p>Clave:</p> */}
+            </div>
+            <div className="col-span-2" id="celda5">
+              <label>
+                Clave:
+                <input type="password" id="password" />
+              </label>
+              {/* <input type="password" placeholder="Contraseña" /> */}
+            </div>
+            <div className="col-span-2" id="celda6">
+              <p>¿Olvidó su clave?</p>
+            </div>
+            <div id="celda7"></div>
+            <div className="col-span-2" id="celda8">
+              <p>Registrarse como empresa</p>
+            </div>
+            <div className="col-span-2" id="celda9">
+              <p>Registrarse como independiente</p>
+            </div>
+          </div>
+        </form>

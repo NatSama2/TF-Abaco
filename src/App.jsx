@@ -47,7 +47,6 @@ function AppRoutes() {
     return(
       <BrowserRouter>
       <AppRoutes />
-      
       </BrowserRouter>
     )
   }

@@ -1,10 +1,46 @@
+import { auth } from '../../firebase'
 import { NavLink } from "react-router-dom";
+import { useEffect, useState } from 'react';
 import logoColor from "../../assets/logocolor.png";
 import cosecha from "../../assets/EDITABL-PLATAFORMA-10.png";
 import hoja from "../../assets/hoja.png";
+import { getUserInfoByEmail } from "../../servicios/ServiciosFirebase"
 import './index.css'
 
 export const  Barrasuperior = () => {
+ 
+  const userEmail = localStorage.getItem('userEmail');
+  const [userRole, setUserRole] = useState('')
+
+  const handleLogout = () => {
+    auth
+      .signOut()
+      .then(() => {
+        console.log('Cierre de sesión exitoso');
+        // Elimina los datos del usuario del localStorage en el cierre de sesión
+        localStorage.removeItem('userEmail');
+        localStorage.removeItem('userRole');
+      })
+      .catch((error) => {
+        console.error('Error al cerrar sesión', error);
+      });
+  };
+
+  useEffect(() => {
+    // Cuando el componente se monta, obtén el rol del usuario desde Firebase y actualiza el estado
+    getUserInfoByEmail(userEmail)
+      .then((userData) => {
+        if (userData) {
+          setUserRole(userData.rol); // Suponiendo que el campo es "rol"
+        } else {
+          console.log('No se encontró información para el correo electrónico:', userEmail);
+        }
+      })
+      .catch((error) => {
+        console.error('Error al obtener información del usuario:', error);
+      });
+  }, [userEmail]);
+
   return (
     <div className="barrasuperior">
       <img className="cosecha" src={cosecha} alt="LogoCosecha" />
@@ -23,8 +59,9 @@ ABACO</p>
           </div>
         </div>
         <div className="nombre--tipodeusuario">
-          <p className="text-4">Bienvenido, nombre de usuario</p>
-          <p className="text-5">  Revisor logistica</p>
+          <p className="text-4">Bienvenido, {userEmail}</p>
+          <p className="text-5">{userRole}</p>
+          <button onClick={handleLogout}>Cerrar Sesión</button>
         </div>
       </div>
     </div>
