@@ -12,13 +12,13 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 function PdfGenerator({ onDataGenerated }) {
   const [data, setData] = useState(null);
-
+  const [apiData, setApiData] = useState(null);
   const params = useParams()
 
 
   const [signatureImage, setSignatureImage] = useState(null);
 
-  const generatePDF = (data, signatureImage) => {
+  const generatePDF = (data, signatureImage, apiData) => {
 
     if (data && Array.isArray(data) && data.length > 0) {
 
@@ -189,6 +189,35 @@ function PdfGenerator({ onDataGenerated }) {
     }
   };
 
+  //Api de tabla
+  
+  useEffect(() => {
+    fetch('https://script.google.com/macros/s/AKfycbzoGG1gErcj8EO7-RtAevKvkgJlZIg3EuTKyN5_FjmGcyh-Y2wreSkoDgZcAYL4TN6S/exec', {
+      method: 'POST',
+      body: 'key=nq5XK0pT6YPwAWU',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error('Error en la solicitud de la segunda API');
+        }
+      })
+      .then((jsonData) => {
+        console.log('Datos de la segunda API:', jsonData); // Agrega este console.log
+        setApiData(jsonData);
+        // Generate the PDF with data from both APIs
+        generatePDF(data, signatureImage, apiData);
+      })
+      .catch((error) => {
+        console.error('Error al obtener datos de la segunda API:', error);
+      });
+  }, []);
+
+
   useEffect(() => {
     if( typeof params.certificados_consecutivo !== 'undefined'){
       fetch('https://script.google.com/macros/s/AKfycbwz3FM2ZsBFfNvIj8uZ8Gr4e6WpFyV4i3IrM5QryPFpBTplWqmagkCw03m1LWUc-f1m/exec', {
@@ -206,6 +235,7 @@ function PdfGenerator({ onDataGenerated }) {
           }
         })
         .then((jsonData) => {
+          console.log('Datos del primer endpoint API:', jsonData);
           setData(jsonData);
           generatePDF(jsonData)
         })
@@ -228,6 +258,7 @@ function PdfGenerator({ onDataGenerated }) {
           }
         })
         .then((jsonData) => {
+          console.log('Datos del segundo endpoint API:', jsonData);
           setData(jsonData);
           generatePDF(jsonData)
         })
@@ -249,7 +280,7 @@ function PdfGenerator({ onDataGenerated }) {
       <div className="mx-auto">
         <CreateButton
           colorClass="bg-amarillo w-150 h-10 ml-4"
-          onClick={() => generatePDF(data, signatureImage)}
+          onClick={() => generatePDF(data, signatureImage, apiData)}
           text="Adjuntar Firma"
         ></CreateButton>
       </div>
